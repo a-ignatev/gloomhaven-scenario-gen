@@ -1,3 +1,4 @@
+import background from "../assets/background.png";
 import obstacle0 from "../assets/obstacles/obstacle0.png";
 import obstacle1 from "../assets/obstacles/obstacle1.png";
 import obstacle2 from "../assets/obstacles/obstacle2.png";
@@ -110,7 +111,7 @@ export const Map = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundImage: "url('/src/assets/background.png')",
+        backgroundImage: `url(${background})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
