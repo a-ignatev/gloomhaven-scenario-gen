@@ -146,6 +146,7 @@ const generateHexGrid = (enemyCount: number, mapSize: string): Cell[] => {
             variant = Math.floor(Math.random() * specialObstacles.length);
           }
           alreadyUsedSpecialObstacles.push(variant);
+          variant = variant + genericObstacles.length;
         } else {
           variant = Math.floor(Math.random() * genericObstacles.length);
         }
@@ -348,7 +349,9 @@ export const Map = ({
                                 ? "obstacle"
                                 : "empty",
                             variant: Math.floor(
-                              Math.random() * genericObstacles.length
+                              Math.random() *
+                                (specialObstacles.length +
+                                  genericObstacles.length)
                             ),
                           }
                         : cell
