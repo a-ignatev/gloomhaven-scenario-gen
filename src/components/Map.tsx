@@ -339,7 +339,10 @@ export const Map = ({
                 () =>
                   setCells((prev) =>
                     prev.map((cell, i) =>
-                      i === index && type !== "hero" && type !== "enemy"
+                      showSetup &&
+                      i === index &&
+                      type !== "hero" &&
+                      type !== "enemy"
                         ? {
                             ...cell,
                             type:
