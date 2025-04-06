@@ -199,7 +199,7 @@ export const Map = ({
   enemyCount: number;
   mapSize: string;
 }) => {
-  const [cells] = useState(generateHexGrid(enemyCount, mapSize));
+  const [cells, setCells] = useState(generateHexGrid(enemyCount, mapSize));
 
   const mapWidth = HEX_WIDTH * WIDTH_ODD;
   const mapHeight =
@@ -333,6 +333,28 @@ export const Map = ({
                 left: x - 4,
                 top: y - 4,
               }}
+              onClick={
+                // switch type in circle
+                () =>
+                  setCells((prev) =>
+                    prev.map((cell, i) =>
+                      i === index && type !== "hero" && type !== "enemy"
+                        ? {
+                            ...cell,
+                            type:
+                              cell.type === "empty"
+                                ? "trap"
+                                : cell.type === "trap"
+                                ? "obstacle"
+                                : "empty",
+                            variant: Math.floor(
+                              Math.random() * genericObstacles.length
+                            ),
+                          }
+                        : cell
+                    )
+                  )
+              }
             >
               <defs>
                 <clipPath id={`clip-${index}`}>
