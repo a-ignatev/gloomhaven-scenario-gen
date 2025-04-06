@@ -1,4 +1,4 @@
-type Enemy = {
+export type Enemy = {
   name: string;
   hp: number;
   def: number;
@@ -30,7 +30,9 @@ const enemies: Enemy[] = [
   { name: "Bandit Archer", hp: 7, def: 0, ret: 0, flies: false },
 ];
 
-export const generateEnemyGroup = (level: 1 | 2 | 3 | 4 | 5) => {
+export type ScenarioLevel = 1 | 2 | 3 | 4 | 5;
+
+export const generateEnemyGroup = (level: ScenarioLevel) => {
   const presets = {
     1: { countRange: [2, 4], total: 20, min: 0 }, // easy: often multiple weak units
     2: { countRange: [3, 4], total: 32, min: 7 }, // normal: up to mid-tier units

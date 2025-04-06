@@ -6,9 +6,9 @@ import obstacle3 from "../assets/obstacles/obstacle3.png";
 import obstacle4 from "../assets/obstacles/obstacle4.png";
 import obstacle7 from "../assets/obstacles/obstacle7.png";
 
-import heroImg from "../assets/hero.png";
+import heroImg from "../assets/start.png";
 import trapImg from "../assets/trap.png";
-import enemyImg from "../assets/enemies.png";
+import enemyImg from "../assets/enemy.png";
 import { useState } from "react";
 
 const genericObstacles = [obstacle0, obstacle1];
@@ -17,10 +17,11 @@ const specialObstacles = [obstacle2, obstacle3, obstacle4, obstacle7];
 
 const WIDTH_ODD = 5;
 const WIDTH_EVEN = 4;
-// const HEIGHT = 7;
 const CELL_SIZE = 80;
 const STROKE_WIDTH = 6;
-// const MAX_TRAP_COUNT = 3;
+const HEX_SIZE = CELL_SIZE / 2;
+const HEX_WIDTH = Math.sqrt(3) * HEX_SIZE;
+const HEX_HEIGHT = 2 * HEX_SIZE;
 
 const MAP_SIZE_TO_HEIGHT: Record<string, number> = {
   small: 5,
@@ -157,6 +158,38 @@ const generateHexGrid = (enemyCount: number, mapSize: string): Cell[] => {
   return cells;
 };
 
+const HexIcon = ({ text, color }: { text: string; color: string }) => {
+  return (
+    <>
+      <polygon
+        points={Array.from({ length: 6 }, (_, i) => {
+          const angle = (Math.PI / 180) * (60 * i - 30);
+          const r = HEX_SIZE * 0.3;
+          const cx = HEX_WIDTH - r * 2 - 5;
+          const cy = HEX_HEIGHT - r * 1.5 - 5;
+          const px = cx + r * Math.cos(angle);
+          const py = cy + r * Math.sin(angle);
+          return `${px},${py}`;
+        }).join(" ")}
+        fill={color}
+        stroke="white"
+        strokeWidth="1"
+      />
+      <text
+        x={HEX_WIDTH - HEX_SIZE * 0.3 - 17}
+        y={HEX_HEIGHT - HEX_SIZE * 0.3 - 10}
+        dominantBaseline="middle"
+        textAnchor="middle"
+        fill="white"
+        fontSize="14"
+        fontWeight="bold"
+      >
+        {text}
+      </text>
+    </>
+  );
+};
+
 export const Map = ({
   showSetup,
   enemyCount,
@@ -168,13 +201,9 @@ export const Map = ({
 }) => {
   const [cells] = useState(generateHexGrid(enemyCount, mapSize));
 
-  const hexSize = CELL_SIZE / 2;
-  const hexWidth = Math.sqrt(3) * hexSize;
-  const hexHeight = 2 * hexSize;
-
-  const mapWidth = hexWidth * WIDTH_ODD;
+  const mapWidth = HEX_WIDTH * WIDTH_ODD;
   const mapHeight =
-    MAP_SIZE_TO_HEIGHT[mapSize] * (hexHeight * 0.75) + hexHeight / 4;
+    MAP_SIZE_TO_HEIGHT[mapSize] * (HEX_HEIGHT * 0.75) + HEX_HEIGHT / 4;
 
   return (
     <div
@@ -199,20 +228,20 @@ export const Map = ({
         }}
       >
         {cells.map(({ row, col, isEvenRow, type, variant }, index) => {
-          const offsetX = isEvenRow ? hexWidth / 2 : 0;
-          const x = col * hexWidth + offsetX;
-          const y = row * (hexHeight * 0.8);
+          const offsetX = isEvenRow ? HEX_WIDTH / 2 : 0;
+          const x = col * HEX_WIDTH + offsetX;
+          const y = row * (HEX_HEIGHT * 0.8);
 
           const points = Array.from({ length: 6 }, (_, i) => {
             const angle_deg = 60 * i - 30;
             const angle_rad = (Math.PI / 180) * angle_deg;
             const px =
-              hexSize +
-              (hexSize - getStrokeWidth(type, showSetup) / 2) *
+              HEX_SIZE +
+              (HEX_SIZE - getStrokeWidth(type, showSetup) / 2) *
                 Math.cos(angle_rad);
             const py =
-              hexSize +
-              (hexSize - getStrokeWidth(type, showSetup) / 2) *
+              HEX_SIZE +
+              (HEX_SIZE - getStrokeWidth(type, showSetup) / 2) *
                 Math.sin(angle_rad);
             return `${px},${py}`;
           }).join(" ");
@@ -226,10 +255,10 @@ export const Map = ({
                       ? genericObstacles[variant]
                       : specialObstacles[variant - genericObstacles.length]
                   }
-                  x={hexSize * 0.1}
-                  y={hexSize * 0.1}
-                  width={hexSize * 1.7}
-                  height={hexSize * 1.7}
+                  x={HEX_SIZE * 0.1}
+                  y={HEX_SIZE * 0.1}
+                  width={HEX_SIZE * 1.7}
+                  height={HEX_SIZE * 1.7}
                   preserveAspectRatio="xMidYMid meet"
                   opacity={0.8}
                 />
@@ -237,25 +266,28 @@ export const Map = ({
             }
             if (type === "trap") {
               return (
-                <image
-                  href={trapImg}
-                  x={hexSize * 0.2}
-                  y={hexSize * 0.2}
-                  width={hexSize * 1.6}
-                  height={hexSize * 1.6}
-                  opacity={0.8}
-                  preserveAspectRatio="xMidYMid meet"
-                />
+                <>
+                  <image
+                    href={trapImg}
+                    x={HEX_SIZE * 0.2}
+                    y={HEX_SIZE * 0.2}
+                    width={HEX_SIZE * 1.6}
+                    height={HEX_SIZE * 1.6}
+                    opacity={0.8}
+                    preserveAspectRatio="xMidYMid meet"
+                  />
+                  <HexIcon text="1" color={"red"} />
+                </>
               );
             }
             if (type === "hero" && showSetup) {
               return (
                 <image
                   href={heroImg}
-                  x={hexSize * 0.37}
-                  y={hexSize * 0.5}
-                  width={hexSize * 1}
-                  height={hexSize * 1}
+                  x={HEX_SIZE * 0.37}
+                  y={HEX_SIZE * 0.5}
+                  width={HEX_SIZE * 1}
+                  height={HEX_SIZE * 1}
                   opacity={0.5}
                   preserveAspectRatio="xMidYMid meet"
                   style={{
@@ -278,33 +310,9 @@ export const Map = ({
                     href={enemyImg}
                     preserveAspectRatio="xMidYMid meet"
                     opacity={0.7}
-                    width={hexSize * 2}
+                    width={HEX_SIZE * 2}
                   />
-                  <polygon
-                    points={Array.from({ length: 6 }, (_, i) => {
-                      const angle = (Math.PI / 180) * (60 * i - 30);
-                      const r = hexSize * 0.3;
-                      const cx = hexWidth - r * 2 - 5;
-                      const cy = hexHeight - r * 1.5 - 5;
-                      const px = cx + r * Math.cos(angle);
-                      const py = cy + r * Math.sin(angle);
-                      return `${px},${py}`;
-                    }).join(" ")}
-                    fill={getEnemyColor(index)}
-                    stroke="white"
-                    strokeWidth="1"
-                  />
-                  <text
-                    x={hexWidth - hexSize * 0.3 - 17}
-                    y={hexHeight - hexSize * 0.3 - 10}
-                    dominantBaseline="middle"
-                    textAnchor="middle"
-                    fill="white"
-                    fontSize="14"
-                    fontWeight="bold"
-                  >
-                    {index}
-                  </text>
+                  <HexIcon text={String(index)} color={getEnemyColor(index)} />
                 </g>
               );
             }
@@ -318,8 +326,8 @@ export const Map = ({
               key={index}
               x={x}
               y={y}
-              width={hexWidth + 7}
-              height={hexHeight + 7}
+              width={HEX_WIDTH + 7}
+              height={HEX_HEIGHT + 7}
               style={{
                 position: "absolute",
                 left: x - 4,
