@@ -4,29 +4,22 @@ import obstacle1 from "../assets/obstacles/obstacle1.png";
 import obstacle2 from "../assets/obstacles/obstacle2.png";
 import obstacle3 from "../assets/obstacles/obstacle3.png";
 import obstacle4 from "../assets/obstacles/obstacle4.png";
-import obstacle5 from "../assets/obstacles/obstacle5.png";
 import obstacle7 from "../assets/obstacles/obstacle7.png";
 
 import heroImg from "../assets/hero.png";
 import trapImg from "../assets/trap.png";
-import enemyImg from "../assets/14.png";
+import enemyImg from "../assets/enemies.png";
 import { useState } from "react";
 
-const obstacleImages = [
-  obstacle0,
-  obstacle1,
-  obstacle2,
-  obstacle3,
-  obstacle4,
-  obstacle5,
-  obstacle7,
-];
+const genericObstacles = [obstacle0, obstacle1];
+
+const specialObstacles = [obstacle2, obstacle3, obstacle4, obstacle7];
 
 const WIDTH_ODD = 5;
 const WIDTH_EVEN = 4;
 // const HEIGHT = 7;
 const CELL_SIZE = 80;
-const STROKE_WIDTH = 10;
+const STROKE_WIDTH = 6;
 // const MAX_TRAP_COUNT = 3;
 
 const MAP_SIZE_TO_HEIGHT: Record<string, number> = {
@@ -56,6 +49,10 @@ interface Cell {
   type: CellType;
   variant?: number;
 }
+
+const getEnemyColor = (index: number): string => {
+  return ["", "#00aa00", "#0000aa", "#aa0000", "#BF40BF"][index];
+};
 
 const getStrokeWidth = (type: CellType, showSetup: boolean): number => {
   switch (type) {
@@ -94,6 +91,7 @@ function getDrawProperties(
 const generateHexGrid = (enemyCount: number, mapSize: string): Cell[] => {
   const cells: Cell[] = [];
   const allPositions: { row: number; col: number; isEvenRow: boolean }[] = [];
+  const alreadyUsedSpecialObstacles: number[] = [];
 
   for (let row = 0; row < MAP_SIZE_TO_HEIGHT[mapSize]; row++) {
     const isEvenRow = row % 2 === 0;
@@ -136,7 +134,20 @@ const generateHexGrid = (enemyCount: number, mapSize: string): Cell[] => {
         }
       }
       if (type === "obstacle") {
-        variant = Math.floor(Math.random() * (obstacleImages.length - 1)); // 0 to 3
+        const isSpecial =
+          Math.random() < MAP_SIZE_TO_OBSTACLE_PROBABILITY[mapSize];
+        if (
+          isSpecial &&
+          alreadyUsedSpecialObstacles.length < specialObstacles.length
+        ) {
+          variant = Math.floor(Math.random() * specialObstacles.length);
+          while (alreadyUsedSpecialObstacles.includes(variant)) {
+            variant = Math.floor(Math.random() * specialObstacles.length);
+          }
+          alreadyUsedSpecialObstacles.push(variant);
+        } else {
+          variant = Math.floor(Math.random() * genericObstacles.length);
+        }
       }
     }
 
@@ -210,7 +221,11 @@ export const Map = ({
             if (type === "obstacle" && variant !== undefined) {
               return (
                 <image
-                  href={obstacleImages[variant]}
+                  href={
+                    variant < genericObstacles.length
+                      ? genericObstacles[variant]
+                      : specialObstacles[variant - genericObstacles.length]
+                  }
                   x={hexSize * 0.1}
                   y={hexSize * 0.1}
                   width={hexSize * 1.7}
@@ -243,18 +258,53 @@ export const Map = ({
                   height={hexSize * 1}
                   opacity={0.5}
                   preserveAspectRatio="xMidYMid meet"
+                  style={{
+                    opacity: 0,
+                    animation: "fadeIn 1s ease forwards",
+                  }}
                 />
               );
             }
             if (type === "enemy" && showSetup) {
               return (
-                <g clipPath={`url(#clip-${index})`}>
+                <g
+                  clipPath={`url(#clip-${index})`}
+                  style={{
+                    opacity: 0,
+                    animation: "fadeIn 1s ease forwards",
+                  }}
+                >
                   <image
                     href={enemyImg}
                     preserveAspectRatio="xMidYMid meet"
-                    opacity={0.8}
+                    opacity={0.7}
                     width={hexSize * 2}
                   />
+                  <polygon
+                    points={Array.from({ length: 6 }, (_, i) => {
+                      const angle = (Math.PI / 180) * (60 * i - 30);
+                      const r = hexSize * 0.3;
+                      const cx = hexWidth - r * 2 - 5;
+                      const cy = hexHeight - r * 1.5 - 5;
+                      const px = cx + r * Math.cos(angle);
+                      const py = cy + r * Math.sin(angle);
+                      return `${px},${py}`;
+                    }).join(" ")}
+                    fill={getEnemyColor(index)}
+                    stroke="white"
+                    strokeWidth="1"
+                  />
+                  <text
+                    x={hexWidth - hexSize * 0.3 - 17}
+                    y={hexHeight - hexSize * 0.3 - 10}
+                    dominantBaseline="middle"
+                    textAnchor="middle"
+                    fill="white"
+                    fontSize="14"
+                    fontWeight="bold"
+                  >
+                    {index}
+                  </text>
                 </g>
               );
             }

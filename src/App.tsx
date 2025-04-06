@@ -43,11 +43,10 @@ function App() {
           style={{
             backgroundColor: "#ffffff30",
             color: "#111",
-            fontSize: "0.8em",
           }}
           onClick={() => setSeed(Math.random())}
         >
-          ⭯
+          New
         </button>
       </div>
       {showSettings && (
