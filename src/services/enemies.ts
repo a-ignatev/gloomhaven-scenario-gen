@@ -1,11 +1,4 @@
-export type Enemy = {
-  name: string;
-  hp: number;
-  def: number;
-  ret: number;
-  flies: boolean;
-  boss?: boolean;
-};
+import type { Enemy, ScenarioLevel } from "../types";
 
 const enemies: Enemy[] = [
   { name: "Flame Demon", hp: 12, def: 1, ret: 2, flies: true },
@@ -43,8 +36,6 @@ const enemies: Enemy[] = [
   { name: "Mouse", hp: 9, def: 0, ret: 1, flies: false },
   { name: "Bandit Archer", hp: 7, def: 0, ret: 0, flies: false },
 ];
-
-export type ScenarioLevel = 1 | 2 | 3 | 4 | 5;
 
 export const generateEnemyGroup = (level: ScenarioLevel) => {
   const presets = {

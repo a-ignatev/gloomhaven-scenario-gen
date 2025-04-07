@@ -1,4 +1,4 @@
-import type { Enemy } from "../enemies";
+import type { Enemy } from "../types";
 
 export function EnemiesList({ chosenEnemies }: { chosenEnemies: Enemy[] }) {
   return (

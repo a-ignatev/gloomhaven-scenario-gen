@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
-import { Map } from "./components/Map";
-import { generateEnemyGroup, type ScenarioLevel } from "./enemies";
+import { Map } from "./components/Map/Map";
+import { generateEnemyGroup } from "./services/enemies";
+import { type ScenarioLevel } from "./types";
 import { EnemiesList } from "./components/EnemiesList";
 import { Actions } from "./components/Actions";
 

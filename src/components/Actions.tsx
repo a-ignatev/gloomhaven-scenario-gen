@@ -1,6 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { SettingsModal } from "./SettingsModal";
-import type { ScenarioLevel } from "../enemies";
+import type { ScenarioLevel } from "../types";
 
 export function Actions({
   showSetup,

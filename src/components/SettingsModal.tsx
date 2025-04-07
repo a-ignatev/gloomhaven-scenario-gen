@@ -1,4 +1,4 @@
-import type { ScenarioLevel } from "../enemies";
+import type { ScenarioLevel } from "../types";
 
 export function SettingsModal({
   scenarioLevel,
