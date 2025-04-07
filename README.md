@@ -1,4 +1,4 @@
-# Summary
+## Summary
 
 This is a simple app to generate GH B&B random scenario on yoru mobile screen to use it together with the physical components of the game.
 
@@ -20,10 +20,10 @@ How to use:
 - While in setup mode, you can manually adjust obstacles and traps
 - When you hide setup, only the scenario map remains on screen — no player and enemy spawn places
 
-# Screenshot
+## Screenshot
 ![Current File](/resources/screenshot.png "Demo")
 
-# Development:
+## Development:
 It uses React + Vite. No special libs. All assests are just images. Rendering is done using plain `svg` elements.
 
 ```
