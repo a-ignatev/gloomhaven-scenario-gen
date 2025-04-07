@@ -29,3 +29,8 @@ It uses React + Vite. No special libs. All assests are just images. Rendering is
 ```
 npm run dev
 ```
+
+## License
+
+This project is licensed under the [CC BY-NC 4.0 License](https://creativecommons.org/licenses/by-nc/4.0/).  
+You are free to use, modify, and share this project for non-commercial purposes, as long as you credit the original author.
